@@ -1,20 +1,17 @@
-# check_google_adk.py
-import sys
-try:
-    import google_adk  # module name on PyPI installs as google_adk
-    from google.adk.agents import Agent  # public API per docs
-    from google.adk.sessions import InMemorySessionService
-    from google.adk.runners import Runner
+# adk_smoke.py
+from google.adk.agents import Agent
+from google.adk.sessions import InMemorySessionService
+from google.adk.runners import Runner
 
-    print("GOOGLE ADK VERSION:", getattr(google_adk, "__version__", "unknown"))
-
-    # Construct minimal in-memory plumbing without running an LLM
-    agent = Agent(name="sanity-agent")  # no tools/models attached
+def main():
+    agent = Agent(name="sanity_agent")
     session = InMemorySessionService()
-    runner = Runner(agent=agent, session_service=session)
-    print("GOOGLE ADK OK: core classes instantiated")
-    sys.exit(0)
-except Exception as e:
-    print("GOOGLE ADK CHECK FAILED:", repr(e))
-    print("Hint: `pip show google-adk` to verify install.")
-    sys.exit(1)
+    runner = Runner(
+        agent=agent,
+        session_service=session,
+        app_name="adk_smoke_test"   # required kwarg
+    )
+    print("ADK OK:", isinstance(runner, Runner))
+
+if __name__ == "__main__":
+    main()
